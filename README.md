@@ -190,6 +190,43 @@ The following images illustrate the wiring connections between the Raspberry Pi,
 <img width="2266" height="1226" alt="image" src="https://github.com/user-attachments/assets/a34d4127-b76b-4731-8476-9fb36610ade6" />
 
 
+---
+## 🧰 Setup Instructions
+
+```bash
+# 1️⃣  Install Raspberry Pi OS (64-bit)
+# Use Raspberry Pi Imager → Raspberry Pi OS (64-bit)
+# Username: pi   Password: raspberry
+# Enable SSH and Wi-Fi before flashing (Advanced Options).
+
+# 2️⃣  First-boot update
+sudo apt update && sudo apt upgrade -y
+
+# 3️⃣  Enable interfaces
+sudo raspi-config
+# → Interface Options → I2C → Enable
+# → Interface Options → Camera → Enable
+sudo reboot
+
+# 4️⃣  Install I2C tools and Python build deps
+sudo apt install -y i2c-tools python3-smbus python3-pip python3-venv git
+
+# 5️⃣  Clone and install SunFounder libraries
+cd ~
+git clone https://github.com/sunfounder/robot-hat.git && cd robot-hat
+sudo python3 setup.py install
+cd ~
+git clone https://github.com/sunfounder/picar-x.git && cd picar-x
+sudo python3 setup.py install
+sudo reboot
+
+# 6️⃣  (Optional) Create Python venv and dependencies
+cd ~/picar-x
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
 
 ---
 
@@ -250,6 +287,16 @@ Each CSV file starts with a header row generated from the dictionary keys passed
 
 > Each row contains a precise timestamp in ISO 8601 format (e.g., `2025-11-01T22:53:21`) followed by one or more sensor or actuator values.  
 > These structured CSV logs are automatically synchronized to Google Drive nightly for visualization and backup.
+
+## 🚧 Known Limitations and Future Work
+
+- The **DHT11 sensor** currently publishes data locally only — cloud publishing will be added in the next milestone.  
+- The **Pi Camera** captures images and video but is not yet integrated with MQTT or Adafruit IO feeds.  
+- The **IMU / Gyroscope module** is available on the Robot HAT but not yet implemented in code.  
+- No **battery voltage or power monitoring** is included — adding a voltage sensor would improve real-time diagnostics.  
+- The **systemd main service** currently starts individual scripts; combining them into one unified controller script could improve efficiency.  
+- Local data logging works reliably, but **CSV-to-database migration** (e.g., SQLite or InfluxDB) could enhance long-term data analysis.  
+- Future work: build a **mobile dashboard** (React or Flutter) to visualize sensor values and send control commands in real time.
 
 
 ## 🧠 Reflection
