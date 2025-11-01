@@ -270,6 +270,15 @@ except Exception as e:
 **Purpose:**
 Ensures the service auto-restarts if a crash occurs and reconnects to Adafruit IO after transient network failures.
 
+## 📦 Python Requirements
+
+All Python dependencies used in this project are listed in the `requirements.txt` file located at the root of the repository.
+
+To install them quickly, run:
+```bash
+pip install -r requirements.txt
+```
+
 ### 🧾 Data Schema
 
 Each script logs sensor data using the shared `iot/logger.py` module, which automatically names each file as:
