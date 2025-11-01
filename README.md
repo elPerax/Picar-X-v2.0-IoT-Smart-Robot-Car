@@ -184,6 +184,13 @@ The following images illustrate the wiring connections between the Raspberry Pi,
 > **Note:** Ensure power separation between logic (5 V) and motors (external battery pack).  
 > All grounds (GND) must be connected together for proper reference.
 
+## ⚙️ System Architecture (Till Milestone 2)
+
+**System architecture:**
+<img width="2266" height="1226" alt="image" src="https://github.com/user-attachments/assets/a34d4127-b76b-4731-8476-9fb36610ade6" />
+
+
+
 ---
 
 ## 🔁 Reliability & Auto-Start Configuration
