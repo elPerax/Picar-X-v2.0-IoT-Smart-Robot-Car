@@ -53,6 +53,7 @@ Sensors (DHT11, Ultrasonic, Grayscale)
 Visualization & Data Backup
 
 ## 🧩 Directory Structure
+```text
 picar-x/
 ├── example/
 │   ├── 14.avoiding_obstacles_mqtt.py
@@ -73,6 +74,7 @@ picar-x/
 │   ├── 2025-11-01_ultrasonic.csv
 │   └── ...
 └── .env
+```
 
 ## 🔧 Configuration
 - .env file: AIO_USERNAME=your_adafruit_username
@@ -82,33 +84,33 @@ picar-x/
 ## 🚀 How to Run
 - SSH into the Pi
 
-    ssh pi@<raspberry-pi-ip>
-    cd ~/picar-x
+    -ssh pi@<raspberry-pi-ip>
+    -cd ~/picar-x
 
 
 - Activate virtual environment (if used)
 
-    source .venv/bin/activate
+    -source .venv/bin/activate
 
 
 - Run each module individually
 
-    sudo python3 example/14.avoiding_obstacles_mqtt.py
-    sudo python3 example/15.dht11_mqtt.py
-    sudo python3 example/16.line_follow_mqtt.py
-    sudo python3 example/18.tts_mqtt.py
+    -sudo python3 example/14.avoiding_obstacles_mqtt.py
+    -sudo python3 example/15.dht11_mqtt.py
+    -sudo python3 example/16.line_follow_mqtt.py
+    -sudo python3 example/18.tts_mqtt.py
 
 
 - Check Adafruit Dashboard
-    Observe live graphs and values updating in real time.
+    -Observe live graphs and values updating in real time.
 
 - Verify logs
 
-    ls /home/pi/picar-x/logs
+    -ls /home/pi/picar-x/logs
 
 
 - Automatic upload
-    Wait until 00:05 AM → check Google Drive folder for new daily logs.
+    -Wait until 00:05 AM → check Google Drive folder for new daily logs.
 
 ## 📊 Example Data (log file sample)
 timestamp,temp,humidity
@@ -117,13 +119,21 @@ timestamp,temp,humidity
 
 ## 🌐 Cloud Links
 -**Adafruit dashboard:** https://io.adafruit.com/elperax8000/dashboards/picarx-iot-dashboard
+
 -**Feeds Adafruit:**
--grayscale left: https://io.adafruit.com/elperax8000/feeds/grayscale-left
--grayscale mid: https://io.adafruit.com/elperax8000/feeds/grayscale-mid
--grayscale right: https://io.adafruit.com/elperax8000/feeds/grayscale-right
--line state: https://io.adafruit.com/elperax8000/feeds/line-state
--tts: https://io.adafruit.com/elperax8000/feeds/tts
--ultrasonic distance: https://io.adafruit.com/elperax8000/feeds/ultrasonic-distance
+
+    -grayscale left: https://io.adafruit.com/elperax8000/feeds/grayscale-left
+    
+    -grayscale mid: https://io.adafruit.com/elperax8000/feeds/grayscale-mid
+    
+    -grayscale right: https://io.adafruit.com/elperax8000/feeds/grayscale-right
+    
+    -line state: https://io.adafruit.com/elperax8000/feeds/line-state
+    
+    -tts: https://io.adafruit.com/elperax8000/feeds/tts
+    
+    -ultrasonic distance: https://io.adafruit.com/elperax8000/feeds/ultrasonic-distance
+
 -**Google Drive logs folder:** https://drive.google.com/drive/folders/1A4Ai35VOQ5_w5rglKn54Gdh239tzeBDm?usp=sharing
 
 ## 🧰 Tools & Libraries
