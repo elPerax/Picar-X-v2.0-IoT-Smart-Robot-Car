@@ -36,10 +36,20 @@ The goal is to show a complete IoT data pipeline:
   - /home/pi/picar-x/logs/2025-11-01_dht11.csv
 - Each entry contains an ISO timestamp and value(s).
 
-  ✅ **Cloud Storage Automation (Google Drive):**
-- Script `/home/pi/picar-x/tools/upload_yesterday.sh` uploads yesterday’s logs nightly via **rclone**.  
-- Cron job runs at **00 : 05 AM** each day.  
-- Files organized as: My Drive / RobotCar_M2 / logs / YYYY-MM-DD / ...
+ ## ✅ Cloud Storage Automation (Google Drive)
+
+- The script [`/home/pi/picar-x/tools/upload_yesterday.sh`](tools/upload_yesterday.sh) automatically uploads **the previous day’s log files** to Google Drive using **rclone**.  
+- A **cron job** runs daily at **00:05 AM**, ensuring that uploads happen **unattended** once new logs are generated.  
+- Uploaded files are neatly organized in Google Drive following this structure:
+```
+  My Drive /
+└── RobotCar_M2 /
+  └── logs /
+    └── YYYY-MM-DD /
+      ├── 2025-11-01_grayscale.csv
+      ├── 2025-11-01_ultrasonic.csv
+      └── ...
+```
 
 ## ⚙️ System Architecture
 Sensors (DHT11, Ultrasonic, Grayscale)
@@ -315,7 +325,6 @@ Each CSV file starts with a header row generated from the dictionary keys passed
 - No **battery voltage or power monitoring** is included — adding a voltage sensor would improve real-time diagnostics.  
 - The **systemd main service** currently starts individual scripts; combining them into one unified controller script could improve efficiency.  
 - Local data logging works reliably, but **CSV-to-database migration** (e.g., SQLite or InfluxDB) could enhance long-term data analysis.  
-- Future work: build a **mobile dashboard** (React or Flutter) to visualize sensor values and send control commands in real time.
 
 
 ## 🧠 Reflection
