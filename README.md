@@ -78,7 +78,6 @@ picar-x/
 ├── iot/
 │   ├── mqtt_helper.py
 │   ├── logger.py
-│   └── __init__.py
 ├── tools/
 │   ├── upload_yesterday.sh
 ├── logs/
