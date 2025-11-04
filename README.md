@@ -50,6 +50,10 @@ The goal is to show a complete IoT data pipeline:
       ├── 2025-11-01_ultrasonic.csv
       └── ...
 ```
+- If there are **no logs for a given day** (e.g., the robot wasn’t running), the script **skips the upload** and **does not create an empty folder** on Drive.  
+This behavior keeps the cloud storage **clean and organized**, showing only dates when real data was collected.
+- Upload evidence and logs are stored locally under: /home/pi/picar-x/logs/upload_YYYY-MM-DD.log
+
 
 ## ⚙️ System Architecture
 Sensors (DHT11, Ultrasonic, Grayscale)
@@ -77,10 +81,8 @@ picar-x/
 │   └── __init__.py
 ├── tools/
 │   ├── upload_yesterday.sh
-│   ├── upload_today.sh
-│   └── ...
 ├── logs/
-│   ├── 2025-11-01_dht11.csv
+│   ├── 2025-11-01_grayscale.csv
 │   ├── 2025-11-01_ultrasonic.csv
 │   └── ...
 └── .env
@@ -160,7 +162,7 @@ timestamp,temp,humidity
   - Google Drive (via rclone backend)
 
 ## Video Link
--coming...
+https://www.youtube.com/shorts/56ofl5jYCgs
 
 ---
 
