@@ -331,7 +331,7 @@ Each CSV file starts with a header row generated from the dictionary keys passed
 
 ## 🧠 Reflection
 The most difficult part of this milestone was configuring the servo motors.  
-At first, my Picar-X didn’t turn properly — it had trouble going fully to the sides, especially when trying to make sharper right or left turns.  
+At first, my Picar-X didn’t turn properly, it had trouble going fully to the sides, especially when trying to make sharper right or left turns.  
 I spent a lot of time adjusting calibration values, testing angles, and making sure the wheels responded smoothly to the commands from the code.  
 It was a bit frustrating at first, but finally seeing the car move correctly was one of the most satisfying parts of the project.
 
@@ -341,9 +341,9 @@ The **DHT11 temperature and humidity sensor** is already working locally but not
 Getting the MQTT configuration right and managing the timing so the data didn’t exceed Adafruit’s free feed limits was tricky, especially when multiple sensors were active at once.  
 Learning how to log the sensor data locally and automate the uploads to Google Drive helped me better understand how IoT systems can manage both live and stored data effectively.
 
-Overall, this project has been a very enjoyable experience from beginning to end — starting from assembling the robot, wiring all the sensors, and then watching it follow lines or avoid obstacles autonomously.  
+Overall, this project has been a very enjoyable experience from beginning to end, starting from assembling the robot, wiring all the sensors, and then watching it follow lines or avoid obstacles autonomously.  
 It felt like bringing the hardware to life through code.  
 This milestone helped me understand not only how to use sensors and actuators but also how to connect them to a cloud service to visualize data in real time.  
-It gave me a much better understanding of IoT pipelines — from data collection and processing on the Raspberry Pi to cloud analytics and automation.  
+It gave me a much better understanding of IoT pipelines, from data collection and processing on the Raspberry Pi to cloud analytics and automation.  
 In the end, it was a fun, challenging, and very rewarding project that showed me how hardware, software, and cloud systems all work together.
 
