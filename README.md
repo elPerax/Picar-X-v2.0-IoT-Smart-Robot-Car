@@ -22,7 +22,7 @@ The goal is to show a complete IoT data pipeline:
 - **DHT11** – Measures ambient temperature & humidity.  
 - **Pi Camera** – Captures photos/videos.
 
-✅ **Actuators (3 +):**
+✅ **Actuators (3):**
 - **TT Motors** – Drive the wheels.  
 - **Servo Motor** – Controls steering direction.  
 - **Robot-Hat** - The controller board (microcontroller + motor driver) that acts as an actuator interface
