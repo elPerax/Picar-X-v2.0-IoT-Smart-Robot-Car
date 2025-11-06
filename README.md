@@ -24,7 +24,7 @@ The goal is to show a complete IoT data pipeline:
 
 ✅ **Actuators (3):**
 - **TT Motors** – Drive the wheels.  
-- **Servo Motor** – Controls steering direction.  
+- **Servo Motor** – Controls steering direction and camera direction.  
 - **Robot-Hat** - The controller board (microcontroller + motor driver) that acts as an actuator interface
 
 ✅ **Cloud Connectivity (MQTT + Adafruit IO):**
