@@ -15,20 +15,20 @@ The goal is to show a complete IoT data pipeline:
 ---
 
 ## 🧠 Features Implemented
-✅ **Sensors (3 +):**
-- **DHT11** – Measures ambient temperature & humidity.  
+✅ **Sensors (3 +):** 
 - **Ultrasonic Module** – Detects obstacles and controls automatic avoidance.  
-- **Grayscale Module** – Detects and follows a black line track.  
+- **Grayscale Module** – Detects and follows a black line track.
+- **Speaker / TTS Module** – Provides audible feedback and speaks text thas is received.
+- **DHT11** – Measures ambient temperature & humidity.  
 - **Pi Camera** – Captures photos/videos.
 
-✅ **Actuators (3 +):**
+✅ **Actuators (3):**
 - **TT Motors** – Drive the wheels.  
-- **Servo Motor** – Controls steering direction.  
-- **Speaker / TTS Module** – Provides audible feedback and speaks typed text.
+- **Servo Motor** – Controls steering direction and camera direction.  
 - **Robot-Hat** - The controller board (microcontroller + motor driver) that acts as an actuator interface
 
 ✅ **Cloud Connectivity (MQTT + Adafruit IO):**
-- Publishes `ultrasonic_distance`, `dht11_temp`, `dht11_humidity`, `grayscale_left|mid|right`, and `tts` feeds.  
+- Publishes `ultrasonic_distance`, `grayscale_left|mid|right`, `line state` and `tts` feeds.  
 - Real-time dashboard created in Adafruit IO with graphs and gauges.  
 
 ✅ **Local Data Logging:**
@@ -78,7 +78,6 @@ picar-x/
 ├── iot/
 │   ├── mqtt_helper.py
 │   ├── logger.py
-│   └── __init__.py
 ├── tools/
 │   ├── upload_yesterday.sh
 ├── logs/
