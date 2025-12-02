@@ -1,0 +1,11 @@
+2025/11/30 00:05:05 INFO  : Starting bandwidth limiter at 2Mi Byte/s
+2025/11/30 00:05:07 INFO  : 2025-11-29_grayscale.csv: Copied (new)
+2025/11/30 00:05:07 INFO  : 2025-11-29_grayscale_state.csv: Copied (new)
+2025/11/30 00:05:07 INFO  : 2025-11-29_tts.csv: Copied (new)
+2025/11/30 00:05:08 INFO  : 2025-11-29_ultrasonic.csv: Copied (new)
+2025/11/30 00:05:08 INFO  : 
+Transferred:   	    3.511 KiB / 3.511 KiB, 100%, 3.507 KiB/s, ETA 0s
+Transferred:            4 / 4, 100%
+Elapsed time:         2.9s
+
+Uploaded files for 2025-11-29 to gdrive:RobotCar_M2/logs/2025-11-29
