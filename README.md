@@ -1,4 +1,4 @@
-# 🚗 Picar-X v2.0 IoT Smart Robot Car – Milestone 2  
+# 🚗 Picar-X v2.0 IoT Smart Robot Car – Milestone 3  
 **Course:** Internet of Things 2 (IoT 2) – Fall 2025  
 **Student:** Samuel Reyes Cifuentes  
 **Institution:** Champlain College Saint-Lambert  
@@ -7,10 +7,13 @@
 
 ## 🌍 Project Overview
 This project demonstrates an **IoT-enabled smart robot car** built using the **SunFounder Picar-X v2.0** kit and a **Raspberry Pi 4**.  
-The system integrates multiple sensors and actuators, publishes live data to **Adafruit IO** using MQTT, and automatically uploads local logs to **Google Drive** every night.  
+The system integrates multiple sensors and actuators, publishes live data to **Adafruit IO** using MQTT, stores logs locally in **CSV and SQLite**, syncs structured sensor data to a **Neon PostgreSQL cloud database**, and automatically uploads local logs to **Google Drive** every night.  
 
-The goal is to show a complete IoT data pipeline:  
-> **Sense → Process → Log → Upload → Visualize in Cloud**
+A dedicated **Flask dashboard** was also developed to visualize the Neon + SQLite data:  
+🔗 Dashboard Repo: https://github.com/elPerax/picarx-flask-app
+
+The project demonstrates a complete IoT pipeline:  
+> **Sense → Process → Log → Store → Sync → Upload → Visualize → Control**
 
 ---
 
@@ -24,17 +27,52 @@ The goal is to show a complete IoT data pipeline:
 
 ✅ **Actuators (3):**
 - **TT Motors** – Drive the wheels.  
-- **Servo Motor** – Controls steering direction and camera direction.  
-- **Robot-Hat** - The controller board (microcontroller + motor driver) that acts as an actuator interface
+- **Servo Motor for camera** – Controls camera direction.  
+- **Robot-Hat** - Controls steering direction
 
-✅ **Cloud Connectivity (MQTT + Adafruit IO):**
-- Publishes `ultrasonic_distance`, `grayscale_left|mid|right`, `line state` and `tts` feeds.  
-- Real-time dashboard created in Adafruit IO with graphs and gauges.  
+✅ **Cloud Connectivity (MQTT + Adafruit IO):**  
+- Publishes:  
+  - `ultrasonic_distance`  
+  - `grayscale_left`, `grayscale_mid`, `grayscale_right`  
+  - `line_state`  
+  - `tts`  
+- Subscribes:  
+  - `picarx-command`  
+  - `steering-command`  
+  - `camera-command`  
+  - `tts`   
+### 🔁 New in Milestone 3
+- Fully implemented **cloud-to-robot control**  
+- Added **SQLite local database**  
+- Added **Neon PostgreSQL cloud sync** (Python script pushes new rows -> Neon)  
+- Added **Flask dashboard** for Neon/SQLite visualization  
+- Improved **subscriber.py** (unified controller)  
+- Added **systemd auto-start service**  
+- Made file/DB sync fault-tolerant  
 
+---
 ✅ **Local Data Logging:**
 - Each sensor logs to a CSV file automatically named with the date, e.g:
   - /home/pi/picar-x/logs/2025-11-01_dht11.csv
 - Each entry contains an ISO timestamp and value(s).
+
+ ## Neon PostgreSQL Cloud Sync
+ A sync script pushes new SQLite rows → Neon PostgreSQL:
+```
+Script:
+/home/pi/picar-x/iot/neon_sync.py
+Cron(every minute):
+* * * * * /usr/bin/python3 /home/pi/picar-x/iot/neon_sync.py >> /home/pi/picar-x/logs/sync_to_neon.log 2>&1
+
+```
+This ensures:
+
+  - Cloud DB stays updated
+    
+  - Remote visualization dashboards work
+    
+  - Data remains backed up
+
 
  ## ✅ Cloud Storage Automation (Google Drive)
 
@@ -54,6 +92,21 @@ The goal is to show a complete IoT data pipeline:
 This behavior keeps the cloud storage **clean and organized**, showing only dates when real data was collected.
 - Upload evidence and logs are stored locally under: /home/pi/picar-x/logs/upload_YYYY-MM-DD.log
 
+## 🌐 Flask Dashboard (Local + Neon)
+
+A full web dashboard was developed to display:
+
+  - Live Neon data
+  
+  - SQLite fallback data
+  
+  - Charts for each sensor
+  
+  - Line state history
+  
+  - TTS history
+
+Repo: https://github.com/elPerax/picarx-flask-app
 
 ## ⚙️ System Architecture
 Sensors (DHT11, Ultrasonic, Grayscale)
@@ -62,9 +115,15 @@ Sensors (DHT11, Ultrasonic, Grayscale)
         ↓
    MQTT (Paho) → Adafruit IO Cloud Dashboard
         ↓
+   CSV Logs + SQLite DB
+        ↓
  Local CSV Logs → rclone → Google Drive
         ↓
-Visualization & Data Backup
+ Neon PostgreSQL Cloud Database
+        ↓
+ Flask Web Dashboard
+        ↓
+Cloud Commands → subscriber.py → Motors/Servo/TTS
 
 ## 🧩 Directory Structure
 ```text
@@ -90,6 +149,7 @@ picar-x/
 ## 🔧 Configuration
 - .env file: AIO_USERNAME=your_adafruit_username
              AIO_KEY=your_adafruit_key
+             PG_DSN=postgresql://...
 - Cron job: 5 0 * * * bash /home/pi/picar-x/tools/upload_yesterday.sh >> /home/pi/picar-x/logs/cron_upload.log 2>&1
 
 ## 🚀 How to Run
@@ -318,31 +378,37 @@ Each CSV file starts with a header row generated from the dictionary keys passed
 > Each row contains a precise timestamp in ISO 8601 format (e.g., `2025-11-01T22:53:21`) followed by one or more sensor or actuator values.  
 > These structured CSV logs are automatically synchronized to Google Drive nightly for visualization and backup.
 
-## 🚧 Known Limitations and Future Work
+## 🧾 Data Schema
 
-- The **DHT11 sensor** currently publishes data locally only — cloud publishing will be added in the next milestone.  
-- The **Pi Camera** captures images and video but is not yet integrated with MQTT or Adafruit IO feeds.  
-- The **IMU / Gyroscope module** is available on the Robot HAT but not yet implemented in code.  
-- No **battery voltage or power monitoring** is included — adding a voltage sensor would improve real-time diagnostics.  
-- The **systemd main service** currently starts individual scripts; combining them into one unified controller script could improve efficiency.  
-- Local data logging works reliably, but **CSV-to-database migration** (e.g., SQLite or InfluxDB) could enhance long-term data analysis.  
+All sensor data is logged through the shared `iot/logger.py` module.  
+Each CSV file is automatically named using the format:
+YYYY-MM-DD_<sensor>.csv
+```
+Each CSV begins with a header row generated from the dictionary keys passed into the logger.
 
+| **Log File** | **Generated by Script** | **Columns (in order)** | **Description / Units** |
+|---------------|--------------------------|--------------------------|--------------------------|
+| `YYYY-MM-DD_grayscale.csv` | `16.line_follow_mqtt.py` | `timestamp, left, mid, right` | Raw grayscale sensor values (0–4095) |
+| `YYYY-MM-DD_grayscale_state.csv` | `16.line_follow_mqtt.py` | `timestamp, state` | Line-following logic result: `forward`, `left`, `right`, or `stop` |
+| `YYYY-MM-DD_dht11.csv` | `15.dht11_mqtt.py` | `timestamp, temp, humidity` | Temperature in °C and humidity in %RH |
+| `YYYY-MM-DD_ultrasonic.csv` | `14.avoiding_obstacles_mqtt.py` | `timestamp, distance` | Distance to the nearest obstacle (cm) |
+| `YYYY-MM-DD_tts.csv` | `18.tts_mqtt.py` | `timestamp, text` | Text spoken by the robot via TTS |
 
+These logs are used for:
+- **CSV file storage**,  
+- **SQLite database tables**,  
+- **Neon PostgreSQL cloud synchronization**,  
+- **Flask dashboard visualization**.  
+
+This ensures that all data is available both locally and remotely, forming a complete IoT data pipeline.
+```
+---
 ## 🧠 Reflection
-The most difficult part of this milestone was configuring the servo motors.  
-At first, my Picar-X didn’t turn properly, it had trouble going fully to the sides, especially when trying to make sharper right or left turns.  
-I spent a lot of time adjusting calibration values, testing angles, and making sure the wheels responded smoothly to the commands from the code.  
-It was a bit frustrating at first, but finally seeing the car move correctly was one of the most satisfying parts of the project.
+The hardest part of this milestone was fixing the servo calibration.  
+At first, the steering angles were inconsistent, and the car struggled during sharp left and right turns. Adjusting the PWM boundaries, wheel alignment, and servo offsets took a lot of trial and error, but seeing the car drive correctly afterward made the effort worth it.
 
-Another challenging part was adapting and creating the scripts for each sensor and connecting them to the cloud.  
-Right now, I have the **TTS module**, **grayscale sensor**, and **ultrasonic sensor** successfully sending their data to Adafruit IO.  
-The **DHT11 temperature and humidity sensor** is already working locally but not yet sending data to the cloud, and the **camera module** is also functional but not integrated into the cloud system yet.  
-Getting the MQTT configuration right and managing the timing so the data didn’t exceed Adafruit’s free feed limits was tricky, especially when multiple sensors were active at once.  
-Learning how to log the sensor data locally and automate the uploads to Google Drive helped me better understand how IoT systems can manage both live and stored data effectively.
+Connecting all sensors to MQTT and managing the timing so the car didn’t exceed Adafruit IO’s free publish limits was another challenge. Getting the ultrasonic sensor, grayscale sensors, and TTS feed to all send data reliably required tuning delays, adding retry logic, and building a more solid MQTT helper.
 
-Overall, this project has been a very enjoyable experience from beginning to end, starting from assembling the robot, wiring all the sensors, and then watching it follow lines or avoid obstacles autonomously.  
-It felt like bringing the hardware to life through code.  
-This milestone helped me understand not only how to use sensors and actuators but also how to connect them to a cloud service to visualize data in real time.  
-It gave me a much better understanding of IoT pipelines, from data collection and processing on the Raspberry Pi to cloud analytics and automation.  
-In the end, it was a fun, challenging, and very rewarding project that showed me how hardware, software, and cloud systems all work together.
+Milestone 3 also introduced a completely new layer of complexity with **SQLite**, **Neon PostgreSQL**, and the **Flask dashboard**. Writing the sync script, testing data transfers, validating table schemas, and seeing the data appear instantly in Neon made the project feel like a real, production-level IoT ecosystem. The dashboard helped visualize the pipeline clearly and made the whole system feel more complete.
 
+Overall, this project taught me how IoT devices collect data, store it locally, sync it to the cloud, and interact with remote dashboards. It was challenging, but extremely rewarding to see the robot move, avoid obstacles, follow lines, speak through TTS, and sync all of its data automatically. The hands-on experience of combining hardware, software, networking, and cloud systems gave me a much deeper understanding of IoT.
